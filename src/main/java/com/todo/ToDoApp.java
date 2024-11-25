@@ -1,9 +1,13 @@
+package com.todo;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ToDoApp {
     private static ArrayList<String> taskList = new ArrayList<>();
     public static void main(String[] args) {
+        System.out.println("Welcome to the To Do App!");
+
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -20,6 +24,7 @@ public class ToDoApp {
                     break;
                 case 2:
                     running = false;
+                    break;
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
