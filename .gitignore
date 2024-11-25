@@ -4,6 +4,18 @@
 # Log file
 *.log
 
+# Ignore Windows specific files
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Ignore build_log.txt
+build_log.txt
+
 # BlueJ files
 *.ctxt
 
@@ -27,9 +39,18 @@ replay_pid*
 .vscode/
 .idea/
 *.iml
+*.iws
+*.ipr
 
-# Ignore Gradle project-specific cache directory
-.gradle
+# Ignore Gradle files
+.gradle/
+build/
 
-# Ignore Gradle build output directory
-build
+# Ignore Gradle wrapper jar file
+!gradle-wrapper.jar
+
+# Ignore Gradle properties
+gradle.properties
+
+# Ignore build output
+out/
