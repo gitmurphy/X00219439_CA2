@@ -1,8 +1,8 @@
+# Simple To-Do Application
+
 ### Student No.: X00219439
 ### Module: DevOps Continuous Integration DEVOH4000: 2024-25
 ### Program: BSc (Hons) Computing with Machine Learning/AI
-
-# Simple To-Do Application
 
 This is a simple command line interface (CLI) To-Do application implemented using Java. The application includes basic functionality for adding tasks to a non-persisted ArrayList and displaying the list of tasks.
 
@@ -13,7 +13,6 @@ This is a simple command line interface (CLI) To-Do application implemented usin
 - Version Control: Git
 - Continuous Integration Pipeline: Azure DevOps
 - Unit Testing Framework: JUnit Jupiter 5.10.3
-- Static Analysis .......
 
 ## Local Development Setup
 
@@ -89,6 +88,7 @@ The pipeline configuration is defined in the azure-pipelines.yml file which is u
 ```
 trigger:
 - main
+- development
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -107,27 +107,36 @@ steps:
     tasks: 'build'
 ```
 
-By setting the **trigger** to main, Azure is informed that the steps in this pipeline should be executed when a change has been pushed to the main branch of a Github repository.
+By setting the **trigger** to main and development, Azure is informed that the steps in this pipeline should be executed when a change has been pushed to the main or development branch of the Github repository.
 
 The **pool** configuration defines what virtual machine type that the pipeline should run on. In the case of this project the pipeline is running on the latest version of a ubunutu (Linux) machine.
 
 Tasks to be executed by the pipeline are defined under **steps**. This gradle application automatically builds and tests the application once a build is executed.
 
 ## Branch Policies and Protection
+The branching strategy for this project was designed to maintain code quality and facilitate protection rules and pull requests. The main branch should act as a stable 'production' branch while the development branch acts as an integration branch before final merging.
 
+### Branches
+- main
+- development
 
+### Branch Protection Rules
+- Require Pull Request Reviews Before Merging
+- Require Status Checks to Pass Before Merging
+- Restrict Direct Pushes to Main
+
+Note: These rules were applied but not activated due to the use of a free GitHub account. A team or enterprise account would be required to activate the rules.
 
 ## Testing Strategy
 
 ### Unit Testing
-Unit testing is a strategy used to test individual sections or 'units' of code. This projects contains only 2 features, both of which are unit tested.
+Unit testing is a strategy used to test individual sections or 'units' of code. This project contains 2 features, both of which are unit tested.
 
 ### Code Coverage
- Analysis of code coverage performed using JaCoCo to measure percentage of coverage. First code coverage analysis reported 38% code coverage. Considering a goal of 80% code coverage, further tests were applied to reach this goal.
+ Analysis of code coverage performed using JaCoCo to measure percentage of coverage. First code coverage analysis reported 38% code coverage. Although a goal of 80% code coverage was established, a final 53% coverage was reached due to complexity in testing the main method. Testing the main method in this CLI application would require simulated user input and simulated outputs. The ultimate version of this to-do list application would take the form of a REST API where endpoints could be tested rather than inputs to the CLI.
 
  ## References
  The application logic in this project was inspired by another To-Do List application available at:
  https://github.com/cimtiaz/todo-list.git
 
  The code was adapted to suit project requirements.
- 
