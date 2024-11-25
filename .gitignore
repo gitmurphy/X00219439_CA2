@@ -23,5 +23,7 @@
 hs_err_pid*
 replay_pid*
 
-# VSCode specific files
+# IDE specific files
 .vscode/
+.idea/
+*.iml
