@@ -12,7 +12,7 @@ public class ToDoApp {
         boolean running = true;
 
         while (running) {
-            displayTaskList();
+            System.out.println(displayTaskList());
             System.out.println("\nOptions:\n1. Add Task\n2. Exit");
             System.out.println("Choose an option: ");
             int choice = scanner.nextInt();
@@ -20,7 +20,9 @@ public class ToDoApp {
 
             switch(choice) {
                 case 1:
-                    addTask(scanner);
+                    System.out.print("Enter a new task: ");
+                    String task = scanner.nextLine();
+                    addTask(task);
                     break;
                 case 2:
                     running = false;
@@ -32,21 +34,32 @@ public class ToDoApp {
         scanner.close();
     }
 
-    private static void displayTaskList() {
+    public static ArrayList<String> getTaskList() {
+        return taskList;
+    }
+
+    public static String displayTaskList() {
         if (taskList.isEmpty()) {
-            System.out.println("\n Task List is empty.");
+            return "Task List is empty.";
         } else {
-            System.out.println("\nTask List:");
+            StringBuilder output = new StringBuilder("Task List:");
             for (String task : taskList) {
-                System.out.println(task);
+                output.append("\n").append(task);
             }
+            return output.toString();
         }
     }
 
-    private static void addTask(Scanner scanner) {
-        System.out.println("Enter a new task: ");
-        String task = scanner.nextLine();
-        taskList.add(task);
-        System.out.println("Task added: " + task);
+    public static void addTask(String task) {
+        if (task == null || task.trim().isEmpty()) {
+            System.out.println("Task cannot be empty.");
+        } else {
+            taskList.add(task);
+            System.out.println("Task added: " + task);
+        }
+    }
+
+    public static void clearTaskList() {
+        taskList.clear();
     }
 }
