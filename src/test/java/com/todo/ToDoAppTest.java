@@ -1,10 +1,10 @@
 package com.todo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.todo.ToDoApp.displayTaskList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ToDoAppTest {
 
@@ -36,5 +36,30 @@ public class ToDoAppTest {
         System.out.println(displayTaskList());
         System.out.println(expectedOutput);
         assertEquals(expectedOutput, displayTaskList(), "Display task list should return the correct formatted output.");
+    }
+
+    @Test
+    void testDisplayTaskListEmpty() {
+        // Expected output when the task list is empty
+        String expectedOutput = "Task List is empty.";
+        assertEquals(expectedOutput, displayTaskList(), "Display task list should return the correct message when the task list is empty.");
+    }
+
+    @Test
+    void testAddTaskEmpty() {
+        // Test adding an empty task
+        ToDoApp.addTask("");
+        assertEquals(0, ToDoApp.getTaskList().size(), "Task list should be empty after adding an empty task.");
+    }
+
+    @Test
+    void testClearTaskList() {
+        // Add tasks using the ToDoApp addTask method
+        ToDoApp.addTask("Cook dinner");
+        ToDoApp.addTask("Do laundry");
+
+        // Clear the task list
+        ToDoApp.getTaskList().clear();
+        assertEquals(0, ToDoApp.getTaskList().size(), "Task list should be empty after clearing the task list.");
     }
 }
