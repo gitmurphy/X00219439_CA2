@@ -66,8 +66,8 @@ public class ToDoAppTest {
         ToDoApp.addTask("Cook dinner");
         ToDoApp.addTask("Do laundry");
 
-        // Clear the task list
-        ToDoApp.getTaskList().clear();
+        // Clear the task list using the clearTaskList method
+        ToDoApp.clearTaskList();
         assertEquals(0, ToDoApp.getTaskList().size(), "Task list should be empty after clearing the task list.");
     }
 }
