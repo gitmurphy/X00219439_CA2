@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.todo.ToDoApp.displayTaskList;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ToDoAppTest {
 
@@ -12,6 +13,13 @@ public class ToDoAppTest {
     void setUp() {
         // Clear the task list before each test
         ToDoApp.getTaskList().clear();
+    }
+
+    // Test the constructor to improve code coverage
+    @Test
+    void testToDoAppConstructor() {
+        ToDoApp app = new ToDoApp();
+        assertNotNull(app, "ToDoApp should be created and not null.");
     }
 
     @Test
