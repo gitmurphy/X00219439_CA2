@@ -16,15 +16,12 @@ stages:
 
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
-
+          
           - task: SonarCloudPrepare@3
             inputs:
-              SonarCloud: 'SonarConnection'
-              organization: 'X00219439'
+              SonarQube: 'SonarConnection'
+              organization: 'x00219439'
               scannerMode: 'other'
-              extraProperties: |
-                sonar.projectKey=x00219439
-                sonar.projectName=X00219439_CA2
 
           - task: Gradle@3
             inputs:
