@@ -35,6 +35,30 @@ testing {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+            reports {
+                xml.required = true
+                csv.required = false
+                html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+            }
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.5.toBigDecimal() // requires minimum 50% code coverage
+            }
+        }
+    }
+}
+
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -47,4 +71,8 @@ java {
 application {
     // Define the main class for the application.
     mainClass = "com.todo.ToDoApp"
+}
+
+jacoco {
+    toolVersion = "0.8.7"
 }
