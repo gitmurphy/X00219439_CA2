@@ -1,25 +1,24 @@
 trigger:
-- main
-- development
+  - main
+  - development
 
 stages:
-- stage: build
-  displayName: "Build Application"
-  jobs:
-- job: Build
-  displayName: "Build Job"
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: Gradle@3
-    inputs:
-      workingDirectory: ''
-      gradleWrapperFile: 'gradlew'
-      gradleOptions: '-Xmx3072m'
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '17'
-      jdkArchitectureOption: 'x64'
-      publishJUnitResults: true
-      testResultsFiles: '**/TEST-*.xml'
-      tasks: 'build'
-        
+  - stage: build
+    displayName: "Build Application"
+    jobs:
+      - job: Build
+        displayName: "Build Job"
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: Gradle@3
+            inputs:
+              workingDirectory: ''
+              gradleWrapperFile: 'gradlew'
+              gradleOptions: '-Xmx3072m'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              publishJUnitResults: true
+              testResultsFiles: '**/TEST-*.xml'
+              tasks: 'build'
