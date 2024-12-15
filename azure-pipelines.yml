@@ -20,8 +20,8 @@ stages:
               organization: 'X00219439'
               scannerMode: 'other'
               extraProperties: |
-                sonar.projectKey=x00219439
-                sonar.projectName=X00219439
+                sonar.projectKey=X00219439_X00219439_CA2
+                sonar.projectName=X00219439_CA2
 
           - task: Gradle@3
             inputs:
