@@ -11,6 +11,8 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+          - script: chmod +x gradlew
+            displayName: 'Make gradlew executable'
           - task: Gradle@3
             inputs:
               workingDirectory: ''
