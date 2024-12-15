@@ -11,6 +11,9 @@ stages:
         pool:
           vmImage: 'ubuntu-latest'
         steps:
+          - checkout: self
+            fetchDepth: 0
+
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
 
