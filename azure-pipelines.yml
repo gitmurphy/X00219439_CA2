@@ -24,7 +24,7 @@ stages:
               scannerMode: 'other'
               extraProperties: |
                 sonar.projectKey=x00219439
-                sonar.projectName=X00219439
+                sonar.projectName=X00219439_CA2
 
           - task: Gradle@3
             inputs:
