@@ -14,6 +14,15 @@ stages:
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
 
+          - task: SonarCloudPrepare@3
+            inputs:
+              SonarCloud: 'SonarConnection'
+              organization: 'X00219439'
+              scannerMode: 'other'
+              extraProperties: |
+                sonar.projectKey=x00219439
+                sonar.projectName=X00219439
+
           - task: Gradle@3
             inputs:
               workingDirectory: ''
@@ -24,9 +33,13 @@ stages:
               jdkArchitectureOption: 'x64'
               publishJUnitResults: true
               testResultsFiles: '**/TEST-*.xml'
-              tasks: 'build jacocoTestReport'
+              tasks: 'clean build test jacocoTestReport sonar'
 
           - task: PublishCodeCoverageResults@2
             inputs:
               summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
               pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
+
+          - task: SonarCloudPublish@3
+            inputs:
+              pollingTimeoutSec: '300'

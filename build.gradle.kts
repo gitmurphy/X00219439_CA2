@@ -11,6 +11,8 @@ plugins {
     application
     // jacoco for code coverage analysis
     id("jacoco")
+    // SonarQube for quality checks
+    id("org.sonarqube") version "5.1.0.4882"
 }
 
 repositories {
