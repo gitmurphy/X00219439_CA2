@@ -22,6 +22,12 @@ stages:
               SonarQube: 'SonarConnection'
               organization: 'x00219439'
               scannerMode: 'other'
+              extraProperties: |
+                # Additional properties that will be passed to the scanner,
+                # Put one key=value per line, example:
+                # sonar.exclusions=**/*.bin
+                sonar.projectKey=X00219439_X00219439_CA2
+                sonar.projectName=X00219439_CA2
 
           - task: Gradle@3
             inputs:
