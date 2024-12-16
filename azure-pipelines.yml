@@ -70,14 +70,8 @@ stages:
           - task: CopyFiles@2
             displayName: 'Copy jar files'
             inputs:
-              contents: '**/build/libs/*.jar' # Match all jar files in case there's a naming issue
+              contents: '**/build/libs/*.jar'
               targetFolder: '$(build.artifactStagingDirectory)'
-
-          # Debugging
-          - script: |
-              echo "Listing files in $(build.artifactStagingDirectory):"
-              ls -R $(build.artifactStagingDirectory)
-            displayName: "Verify Files Copied to Artifact Staging Directory"
 
           # Publish other build artifacts into the artifact staging directory for use in later stages
           - task: PublishBuildArtifacts@1
@@ -118,3 +112,5 @@ stages:
                   fi
                   echo "Found JAR file: $JAR_FILE"
                   java -jar $JAR_FILE &
+              displayName: 'Simple To-Do Application'
+              
