@@ -63,7 +63,7 @@ stages:
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
 
-          # Establish SonarCloud connection and run analysis
+          # Establish SonarCloud connection
           - task: SonarCloudPrepare@3
             inputs:
               SonarQube: 'SonarConnection'
@@ -106,7 +106,7 @@ stages:
               pollingTimeoutSec: '300'
 
   - stage: deploy
-    displayName: "Deploy Application"
+    displayName: "Deploy Application to Dev Environment"
     dependsOn: test
     jobs:
       - deployment: deploy
