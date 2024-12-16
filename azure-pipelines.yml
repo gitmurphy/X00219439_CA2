@@ -62,7 +62,8 @@ stages:
             inputs:
               pollingTimeoutSec: '300'
 
-          - task: CopyFiles@3
+          - task: CopyFiles@2
+            displayName: 'Copy jar files'
             inputs:
               contents: '**/build/libs/*SNAPSHOT.jar'
               targetFolder: '$(build.artifactStagingDirectory)'
