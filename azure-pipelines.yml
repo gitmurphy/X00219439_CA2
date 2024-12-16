@@ -14,10 +14,7 @@ stages:
     jobs:
       - job: Build
         displayName: "Build Job"
-
         steps:
-          - checkout: self
-            fetchDepth: 0
 
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
@@ -28,21 +25,8 @@ stages:
               versionSpec: '$(javaVersion)'
               jdkArchitectureOption: 'x64'
               jdkSourceOption: 'PreInstalled'
-          
-          # Establish SonarCloud connection and run analysis
-          - task: SonarCloudPrepare@3
-            inputs:
-              SonarQube: 'SonarConnection'
-              organization: 'x00219439'
-              scannerMode: 'other'
-              extraProperties: |
-                # Additional properties that will be passed to the scanner,
-                # Put one key=value per line, example:
-                # sonar.exclusions=**/*.bin
-                sonar.projectKey=X00219439_X00219439_CA2
-                sonar.projectName=X00219439_CA2
 
-          # Run Gradle tasks
+          # Run Gradle build task -> creates jar file
           - task: Gradle@3
             inputs:
               workingDirectory: ''
@@ -51,20 +35,7 @@ stages:
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '17'
               jdkArchitectureOption: 'x64'
-              publishJUnitResults: true
-              testResultsFiles: '**/TEST-*.xml'
-              tasks: 'clean build test jacocoTestReport sonar'
-
-          # Publish code coverage results to Azure
-          - task: PublishCodeCoverageResults@2
-            inputs:
-              summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
-              pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
-
-          # Publish SonarCloud results
-          - task: SonarCloudPublish@3
-            inputs:
-              pollingTimeoutSec: '300'
+              tasks: 'clean build'
 
           # Copy JAR files into the artifact staging directory for use in later stages
           - task: CopyFiles@2
@@ -79,7 +50,61 @@ stages:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
               artifactName: 'drop'
 
+  - stage: test
+    displayName: "Test Application"
+    dependsOn: build
+    jobs:
+      - job: Test
+        displayName: "Test Job"
+        steps:
+          - checkout: self
+            fetchDepth: 0
+
+          # Download the JAR file and other build artifacts from the build stage
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          # Run Gradle test tasks
+          - task: Gradle@3
+            inputs:
+              workingDirectory: ''
+              gradleWrapperFile: 'gradlew'
+              gradleOptions: '-Xmx3072m'
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '17'
+              jdkArchitectureOption: 'x64'
+              publishJUnitResults: true
+              testResultsFiles: '**/TEST-*.xml'
+              tasks: 'test jacocoTestReport sonar'
+
+          # Publish code coverage results to Azure
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
+              pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
+
+          # Establish SonarCloud connection and run analysis
+          - task: SonarCloudPrepare@3
+            inputs:
+              SonarQube: 'SonarConnection'
+              organization: 'x00219439'
+              scannerMode: 'other'
+              extraProperties: |
+                sonar.projectKey=X00219439_X00219439_CA2
+                sonar.projectName=X00219439_CA2
+
+          # Publish SonarCloud results
+          - task: SonarCloudPublish@3
+            inputs:
+              pollingTimeoutSec: '300'
+
   - stage: deploy
+    displayName: "Deploy Application"
+    dependsOn: test
     jobs:
       - deployment: deploy
         environment: 'Dev'
@@ -88,29 +113,28 @@ stages:
             deploy:
               steps:
 
-            # Ensure correct JDK is available
-              - task: JavaToolInstaller@0
-                inputs:
-                  versionSpec: '$(javaVersion)'
-                  jdkArchitectureOption: 'x64'
-                  jdkSourceOption: 'PreInstalled'
+                # Ensure correct JDK is available
+                - task: JavaToolInstaller@0
+                  inputs:
+                    versionSpec: '$(javaVersion)'
+                    jdkArchitectureOption: 'x64'
+                    jdkSourceOption: 'PreInstalled'
 
-              # Download the JAR file from the build stage
-              - task: DownloadBuildArtifacts@0
-                inputs:
-                  buildType: 'current'
-                  downloadType: 'single'
-                  artifactName: 'drop'
-                  downloadPath: '$(System.ArtifactsDirectory)'
+                # Download the JAR file and other build artifacts from the build stage
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    buildType: 'current'
+                    downloadType: 'single'
+                    artifactName: 'drop'
+                    downloadPath: '$(System.ArtifactsDirectory)'
 
-              # Find the JAR file and run it
-              - script: |
-                  JAR_FILE=$(find $(System.ArtifactsDirectory) -name *.jar)
-                  if [ -z "$JAR_FILE" ]; then
-                    echo "No JAR file found"
-                    exit 1
-                  fi
-                  echo "Found JAR file: $JAR_FILE"
-                  java -jar $JAR_FILE &
-              displayName: 'Simple To-Do Application'
-              
+                # Find the JAR file and run it
+                - script: |
+                    JAR_FILE=$(find $(System.ArtifactsDirectory) -name *.jar)
+                    if [ -z "$JAR_FILE" ]; then
+                      echo "No JAR file found"
+                      exit 1
+                    fi
+                    echo "Found JAR file: $JAR_FILE"
+                    java -jar $JAR_FILE &
+                  displayName: 'Simple To-Do Application'
