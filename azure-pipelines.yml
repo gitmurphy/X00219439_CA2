@@ -60,6 +60,9 @@ stages:
           - checkout: self
             fetchDepth: 0
 
+          - script: chmod +x gradlew
+            displayName: 'Make gradlew executable'
+
           # Download the JAR file and other build artifacts from the build stage
           - task: DownloadBuildArtifacts@0
             inputs:
