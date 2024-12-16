@@ -29,6 +29,7 @@ stages:
               jdkArchitectureOption: 'x64'
               jdkSourceOption: 'PreInstalled'
           
+          # Establish SonarCloud connection and run analysis
           - task: SonarCloudPrepare@3
             inputs:
               SonarQube: 'SonarConnection'
@@ -41,6 +42,7 @@ stages:
                 sonar.projectKey=X00219439_X00219439_CA2
                 sonar.projectName=X00219439_CA2
 
+          # Run Gradle tasks
           - task: Gradle@3
             inputs:
               workingDirectory: ''
@@ -53,21 +55,25 @@ stages:
               testResultsFiles: '**/TEST-*.xml'
               tasks: 'clean build test jacocoTestReport sonar'
 
+          # Publish code coverage results to Azure
           - task: PublishCodeCoverageResults@2
             inputs:
               summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
               pathToSources: '$(System.DefaultWorkingDirectory)/app/src/main/java/'
 
+          # Publish SonarCloud results
           - task: SonarCloudPublish@3
             inputs:
               pollingTimeoutSec: '300'
 
+          # Copy JAR files into the artifact staging directory for use in later stages
           - task: CopyFiles@2
             displayName: 'Copy jar files'
             inputs:
               contents: '**/build/libs/*SNAPSHOT.jar'
               targetFolder: '$(build.artifactStagingDirectory)'
 
+          # Publish other build artifacts into the artifact staging directory for use in later stages
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: '$(Build.ArtifactStagingDirectory)'
@@ -82,15 +88,27 @@ stages:
             deploy:
               steps:
 
+            # Ensure correct JDK is available
               - task: JavaToolInstaller@0
                 inputs:
                   versionSpec: '$(javaVersion)'
                   jdkArchitectureOption: 'x64'
                   jdkSourceOption: 'PreInstalled'
 
+              # Download the JAR file from the build stage
               - task: DownloadBuildArtifacts@0
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
                   artifactName: 'drop'
                   downloadPath: '$(System.ArtifactsDirectory)'
+
+              # Find the JAR file and run it
+              - script: |
+                  JAR_FILE=$(find $(System.ArtifactsDirectory) -name *SNAPSHOT.jar)
+                  if [ -z "$JAR_FILE" ]; then
+                    echo "No JAR file found"
+                    exit 1
+                  fi
+                  echo "Found JAR file: $JAR_FILE"
+                  java -jar $JAR_FILE &
