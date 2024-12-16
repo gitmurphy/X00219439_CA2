@@ -2,20 +2,32 @@ trigger:
   - main
   - development
 
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  javaVersion: '17'
+
 stages:
   - stage: build
     displayName: "Build Application"
     jobs:
       - job: Build
         displayName: "Build Job"
-        pool:
-          vmImage: 'ubuntu-latest'
+
         steps:
           - checkout: self
             fetchDepth: 0
 
           - script: chmod +x gradlew
             displayName: 'Make gradlew executable'
+
+          # Ensure correct JDK is available
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '$(javaVersion)'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
           
           - task: SonarCloudPrepare@3
             inputs:
@@ -49,3 +61,7 @@ stages:
           - task: SonarCloudPublish@3
             inputs:
               pollingTimeoutSec: '300'
+
+  - stage: deploy
+    jobs:
+      - deployment: deploy
