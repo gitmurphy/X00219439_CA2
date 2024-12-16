@@ -73,6 +73,12 @@ stages:
               contents: '**/build/libs/*SNAPSHOT.jar'
               targetFolder: '$(build.artifactStagingDirectory)'
 
+          # Debugging
+          - script: |
+              echo "Listing files in $(build.artifactStagingDirectory):"
+              ls -R $(build.artifactStagingDirectory)
+            displayName: "Verify Files Copied to Artifact Staging Directory"
+
           # Publish other build artifacts into the artifact staging directory for use in later stages
           - task: PublishBuildArtifacts@1
             inputs:
