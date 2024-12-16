@@ -62,6 +62,33 @@ stages:
             inputs:
               pollingTimeoutSec: '300'
 
+          - task: CopyFiles@3
+            inputs:
+              contents: '**/build/libs/*SNAPSHOT.jar'
+              targetFolder: '$(build.artifactStagingDirectory)'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)'
+              artifactName: 'drop'
+
   - stage: deploy
     jobs:
       - deployment: deploy
+        environment: 'Dev'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+
+              - task: JavaToolInstaller@0
+                versionSpec: '$(javaVersion)'
+                jdkArchitectureOption: 'x64'
+                jdkSourceOption: 'PreInstalled'
+
+              - task: DownloadBuildArtifacts@0
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: 'drop'
+                  downloadPath: '$(System.ArtifactsDirectory)'
