@@ -111,7 +111,7 @@ stages:
 
               # Find the JAR file and run it
               - script: |
-                  JAR_FILE=$(find $(System.ArtifactsDirectory) -name *SNAPSHOT.jar)
+                  JAR_FILE=$(find $(System.ArtifactsDirectory) -name *.jar)
                   if [ -z "$JAR_FILE" ]; then
                     echo "No JAR file found"
                     exit 1
