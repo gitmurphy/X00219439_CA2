@@ -105,6 +105,28 @@ stages:
             inputs:
               pollingTimeoutSec: '300'
 
+  - stage: SecurityScanning
+    displayName: 'Security Scanning'
+    jobs:
+      - job: SecurityCheck
+
+        steps:
+          # Download artifacts from the build stage
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'build-outputs'
+              downloadPath: '$(System.DefaultWorkingDirectory)'
+
+          # Run security scanning
+          - task: MicrosoftSecurityDevOps@1
+            inputs:
+              categories: 'sources'  # Scan source code
+              break: false # Starting with false to avoid breaking builds
+              tools: 'credscan'    # Basic credential scanning
+              sourcePath: '$(System.DefaultWorkingDirectory)'
+
   - stage: deploy
     displayName: "Deploy Application to Dev Environment"
     dependsOn: test
