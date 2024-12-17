@@ -137,7 +137,7 @@ stages:
               uploadReports: true
               uploadSARIFReport: true
               failOnCVSS: '7' # Fail build if vulnerabilities score is 7 - high severity
-              nvdApiKey: '6a06e626-0b27-4d65-9e9c-2a7f0f117cca'
+              nvdApiKey: 6a06e626-0b27-4d65-9e9c-2a7f0f117cca
 
   - stage: deploy
     displayName: "Deploy Application to Dev Environment"
