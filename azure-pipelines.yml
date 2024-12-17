@@ -105,8 +105,9 @@ stages:
             inputs:
               pollingTimeoutSec: '300'
 
-  - stage: SecurityScanning
+  - stage: security
     displayName: 'Security Scanning'
+    dependsOn: test
     jobs:
       - job: SecurityCheck
 
@@ -116,8 +117,8 @@ stages:
             inputs:
               buildType: 'current'
               downloadType: 'single'
-              artifactName: 'build-outputs'
-              downloadPath: '$(System.DefaultWorkingDirectory)'
+              artifactName: 'drop'
+              downloadPath: '$(System.ArtifactsDirectory)'
 
           # Run security scanning
           - task: MicrosoftSecurityDevOps@1
@@ -129,7 +130,7 @@ stages:
 
   - stage: deploy
     displayName: "Deploy Application to Dev Environment"
-    dependsOn: test
+    dependsOn: security
     jobs:
       - deployment: deploy
         environment: 'Dev'
