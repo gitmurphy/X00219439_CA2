@@ -120,13 +120,24 @@ stages:
               artifactName: 'drop'
               downloadPath: '$(System.ArtifactsDirectory)'
 
-          # Run security scanning
+          # Run Microsoft security scanning tools
           - task: MicrosoftSecurityDevOps@1
             inputs:
               categories: 'sources'  # Scan source code
-              break: false # Starting with false to avoid breaking builds
+              break: false
               tools: 'credscan'    # Basic credential scanning
               sourcePath: '$(System.DefaultWorkingDirectory)'
+
+          # Run OWASP dependency security scanning
+          - task: dependency-check-build-task@6
+            inputs:
+              projectName: '$(Build.Repository.Name)'
+              scanPath: '$(System.DefaultWorkingDirectory)'
+              format: 'HTML'
+              uploadReports: true
+              uploadSARIFReport: true
+              failOnCVSS: '7' # Fail build if vulnerabilities score is 7 - high severity
+              nvdApiKey: '6a06e626-0b27-4d65-9e9c-2a7f0f117cca'
 
   - stage: deploy
     displayName: "Deploy Application to Dev Environment"
