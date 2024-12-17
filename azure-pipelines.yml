@@ -109,7 +109,7 @@ stages:
     displayName: 'Security Scanning'
     dependsOn: test
     jobs:
-      - job: "Security Checks"
+      - job: Security
 
         steps:
           # Download artifacts from the build stage
