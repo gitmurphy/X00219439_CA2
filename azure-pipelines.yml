@@ -130,6 +130,7 @@ stages:
 
           # Run OWASP dependency security scanning
           - task: dependency-check-build-task@6
+            displayName: 'Dependency Security Scanning'
             inputs:
               projectName: '$(Build.Repository.Name)'
               scanPath: '$(System.DefaultWorkingDirectory)'
@@ -137,7 +138,7 @@ stages:
               uploadReports: true
               uploadSARIFReport: true
               failOnCVSS: '7' # Fail build if vulnerabilities score is 7 - high severity
-              nvdApiKey: 6a06e626-0b27-4d65-9e9c-2a7f0f117cca
+              nvdApiKey: 'ba4622e4-6fd2-40e0-b9ca-27e3939c7990'
 
   - stage: deploy
     displayName: "Deploy Application to Dev Environment"
