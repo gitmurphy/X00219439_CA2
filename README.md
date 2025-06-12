@@ -1,4 +1,4 @@
-# Simple To-Do Application
+# Java CLI To-Do App with Full Azure DevOps Pipeline
 
 ### Student No.: X00219439
 ### Module: DevOps Continuous Integration DEVOH4000: 2024-25
